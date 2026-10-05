@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration{% endblock %}
+
+{% block body %}
+    <h1>Administration</h1>
+    <ul>
+        <li><a href="/admin/skill/new">Ajouter une compétence</a></li>
+        <li><a href="/admin/newTraining">Ajouter une formation</a></li>
+        <li><a href="/admin/newExperience">Ajouter une expérience</a></li>
+        <li><a href="/admin/newPassion">Ajouter une passion</a></li>
+        <li><a href="/logout">Se déconnecter</a></li>
+    </ul>
+{% endblock %}

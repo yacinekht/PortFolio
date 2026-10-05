@@ -1,0 +1,247 @@
+{# templates/home/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Yacine Khiat | Cloud & Cybersécurité{% endblock %}
+
+{% block stylesheets %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Syne:wght@800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #060a12;
+            --panel: #0e1524;
+            --line: #1b2436;
+            --text: #e6e9f0;
+            --muted: #8a94a8;
+            --cyan: #00e5ff;
+            --orange: #ff6b1a;
+            --violet: #8b5cf6;
+            --green: #34d399;
+            --mono: 'JetBrains Mono', ui-monospace, monospace;
+            --display: 'Syne', 'Arial Black', sans-serif;
+            --sans: 'DM Sans', system-ui, sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; }
+        html { scroll-behavior: smooth; background-color: var(--bg) !important; }
+        html, body { background-color: var(--bg) !important; }
+        body { color: var(--text); font-family: var(--sans); line-height: 1.65; overflow-x: hidden; }
+        a { color: inherit; text-decoration: none; }
+        :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+        .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+        .nav { position: sticky; top: 0; z-index: 10; background: rgba(6,10,18,.88); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+        .nav .wrap { display: flex; justify-content: space-between; align-items: center; height: 64px; }
+        .logo { font-family: var(--mono); font-weight: 700; letter-spacing: .12em; color: var(--cyan); }
+        .nav ul { list-style: none; display: flex; gap: 32px; padding: 0; }
+        .nav ul a { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); transition: color .2s; }
+        .nav ul a:hover { color: var(--cyan); }
+
+        .hero { position: relative; padding: 120px 0 130px; background: radial-gradient(600px 400px at 85% 30%, rgba(0,229,255,.07), transparent 70%); }
+        .hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: 60px; align-items: center; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: .75rem; color: var(--cyan);
+            border: 1px solid rgba(0,229,255,.35); background: rgba(0,229,255,.06); padding: 6px 16px; border-radius: 99px; }
+        .badge i { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 50% { opacity: .25; } }
+        h1 { font-family: var(--display); font-weight: 800; font-size: clamp(3.2rem, 8vw, 6.2rem); line-height: .95; margin: 28px 0 26px; letter-spacing: -.02em; }
+        h1 span { display: block; color: transparent; -webkit-text-stroke: 2px var(--cyan); }
+        .roles { font-family: var(--mono); font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 26px; }
+        .roles b { color: var(--orange); font-weight: 400; }
+        .lead { max-width: 480px; color: #b6bdcc; }
+        .lead strong { color: #fff; }
+        .cta { display: flex; gap: 16px; margin-top: 38px; flex-wrap: wrap; }
+        .btn { font-family: var(--mono); font-size: .8rem; letter-spacing: .06em; padding: 16px 28px; border: 1px solid var(--line); transition: transform .2s, background .2s; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-main { background: var(--cyan); color: #04121a; border-color: var(--cyan); font-weight: 700; }
+        .btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+
+        .portrait { position: relative; justify-self: center; width: min(340px, 80%); aspect-ratio: 5 / 6; border-radius: 22px; padding: 3px;
+            background: linear-gradient(140deg, var(--cyan), var(--violet) 55%, var(--orange)); }
+        .portrait-inner { width: 100%; height: 100%; border-radius: 20px; background: #101828; display: grid; place-items: center; overflow: hidden; }
+        .portrait-inner img { width: 100%; height: 100%; object-fit: cover; }
+        .portrait-inner .emoji { font-size: 5rem; }
+        .chip { position: absolute; background: rgba(14,21,36,.92); border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; font-family: var(--mono); }
+        .chip small { display: block; font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+        .chip b { font-size: .75rem; color: var(--cyan); }
+        .chip-status { top: 8%; right: -30px; }
+        .chip-status b::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-right: 8px; }
+        .chip-loc { bottom: 10%; left: -50px; }
+        .chip-cert { bottom: 30%; right: -50px; }
+
+        section { padding: 100px 0; border-top: 1px solid var(--line); }
+        h2 { font-family: var(--display); font-weight: 800; font-size: clamp(1.9rem, 4vw, 2.8rem); letter-spacing: -.01em; margin-bottom: 44px; }
+        h2::after { content: ''; display: block; width: 56px; height: 3px; background: var(--cyan); margin-top: 14px; }
+
+        .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 26px; }
+        .card h3 { font-family: var(--mono); font-size: .85rem; color: var(--cyan); margin-bottom: 16px; font-weight: 700; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; list-style: none; }
+        .tags li { font-size: .82rem; padding: 4px 12px; border-radius: 6px; background: rgba(255,255,255,.05); color: #c5cbd8; }
+
+        .timeline { border-left: 2px solid var(--line); margin-left: 6px; }
+        .item { position: relative; padding: 0 0 38px 32px; }
+        .item::before { content: ''; position: absolute; left: -7px; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--cyan); }
+        .item time { font-family: var(--mono); font-size: .75rem; color: var(--orange); }
+        .item h3 { font-size: 1.15rem; margin: 4px 0; }
+        .item p { color: var(--muted); max-width: 640px; }
+
+        .passions { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .passions .card p { color: var(--muted); font-size: .92rem; }
+        .passions .card h3 { color: var(--text); font-family: var(--sans); font-size: 1.05rem; }
+
+        .empty { color: var(--muted); font-family: var(--mono); font-size: .85rem; }
+
+        .contact { text-align: center; }
+        .contact h2::after { margin-left: auto; margin-right: auto; }
+        .contact p { color: var(--muted); max-width: 520px; margin: 0 auto 34px; }
+        .links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+        .links a { font-family: var(--mono); font-size: .78rem; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 2px; }
+        .links a:hover { color: var(--cyan); border-color: var(--cyan); }
+        footer { padding: 28px 0; border-top: 1px solid var(--line); text-align: center; font-family: var(--mono); font-size: .72rem; color: var(--muted); }
+
+        @media (max-width: 900px) {
+            .hero { padding: 70px 0; }
+            .hero .wrap { grid-template-columns: 1fr; }
+            .portrait { margin-top: 30px; }
+            .chip-status { right: -6px; } .chip-loc { left: -6px; } .chip-cert { right: -6px; }
+            .nav ul { gap: 16px; } .nav ul a { font-size: .62rem; letter-spacing: .06em; }
+            .nav .logo { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .badge i { animation: none; } .btn { transition: none; } }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {# Les variables skills, trainings, experiences, passions viennent du HomeController #}
+
+    <header class="nav">
+        <div class="wrap">
+            <a class="logo" href="#top">YK.DEV</a>
+            <nav aria-label="Navigation principale">
+                <ul>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#formation">Formation</a></li>
+                    <li><a href="#experience">Expérience</a></li>
+                    <li><a href="#passions">Passions</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="top">
+        <div class="hero">
+            <div class="wrap">
+                <div>
+                    <span class="badge"><i></i>À la recherche d’un stage de fin d’études en 2027, avec une perspective d’alternance à la rentrée 2027.*</span>
+                    <h1>Yacine <span>Khiat</span></h1>
+                    <p class="roles">Cloud · Cybersécurité · <b>Sécurité informatique</b></p>
+                    <p class="lead">Étudiant en informatique à <strong>ENIGMA SCHOOL</strong>, je possède une solide expertise en programmation, hardware, cloud et réseaux. Curieux, rigoureux, et capable d'apprendre rapidement.</p>
+                    <div class="cta">
+                        <a class="btn btn-main" href="#contact">↗ Me contacter</a>
+                        <a class="btn btn-ghost" href="#formation">Voir mon parcours</a>
+                    </div>
+                </div>
+
+                <div class="portrait">
+                    <div class="portrait-inner">
+                        <img src="{{ asset('images/yacine.jpg') }}" alt="Portrait de Yacine Khiat">
+                        <span class="emoji" role="img" aria-label="Développeur devant son ordinateur">🧑‍💻</span>
+                    </div>
+                    <div class="chip chip-status"><small>Statut</small><b>Open to work</b></div>
+                    <div class="chip chip-loc"><small>Localisation</small><b>Lille, France</b></div>
+                </div>
+            </div>
+        </div>
+
+        <section id="skills">
+            <div class="wrap">
+                <h2>Skills</h2>
+                {% if skills|length > 0 %}
+                    <div class="skills">
+                        {% for category, list in skills %}
+                            <article class="card">
+                                <h3>{{ category }}</h3>
+                                <ul class="tags">
+                                    {% for skillName in list %}<li>{{ skillName }}</li>{% endfor %}
+                                </ul>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty">Aucune compétence enregistrée pour le moment.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <section id="formation">
+            <div class="wrap">
+                <h2>Formation</h2>
+                {% if trainings|length > 0 %}
+                    <div class="timeline">
+                        {% for training in trainings %}
+                            <div class="item">
+                                <time>{{ training.periode }}</time>
+                                <h3>{{ training.schoolname }}</h3>
+                                {% if training.description %}<p>{{ training.description }}</p>{% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty">Aucune formation enregistrée pour le moment.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <section id="experience">
+            <div class="wrap">
+                <h2>Expérience</h2>
+                {% if experiences|length > 0 %}
+                    <div class="timeline">
+                        {% for experience in experiences %}
+                            <div class="item">
+                                <time>{{ experience.experiencedate }}</time>
+                                <h3>{{ experience.experiencename }}</h3>
+                                {% if experience.experiencedescription %}<p>{{ experience.experiencedescription }}</p>{% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty">Aucune expérience enregistrée pour le moment.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <section id="passions">
+            <div class="wrap">
+                <h2>Passions</h2>
+                {% if passions|length > 0 %}
+                    <div class="passions">
+                        {% for passion in passions %}
+                            <article class="card">
+                                <h3>{{ passion.passionname }}</h3>
+                                {% if passion.passiondescription %}<p>{{ passion.passiondescription }}</p>{% endif %}
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty">Aucune passion enregistrée pour le moment.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <div class="wrap">
+                <h2>Contact</h2>
+                <p>Je recherche un stage pour mai 2027, suivi d'une alternance à la rentrée 2027, dans les domaines du Cloud ou de la Cybersécurité. N'hésitez pas à me contacter, je vous répondrai dans les plus brefs délais.</p>
+                <a class="btn btn-main" href="mailto:yacine.khiat8@gmail.com">↗ Envoyer un e-mail</a>
+                <div class="links">
+                    <a href="https://github.com/votre-compte" rel="noopener" target="_blank">GitHub</a>
+                    <a href="https://www.linkedin.com/in/yacine-khiat-994b69386/" rel="noopener" target="_blank">LinkedIn</a>
+                    <a href="/files/cv.pdf" download="CV-Yacine-Khiat.pdf">Télécharger mon CV</a>                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>© {{ 'now'|date('Y') }} Yacine Khiat · Lille, France</footer>
+{% endblock %}
