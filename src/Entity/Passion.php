@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 use Symfony\Component\Validator\Constraints as Assert;
 #[Entity(repositoryClass: PassionRepository::class)]
-#[Table(name: 'Passion')]
+#[Table(name: 'passion')]
 
 class Passion
 {

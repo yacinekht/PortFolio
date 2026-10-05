@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use App\Repository\SkillRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Table;
 
 #[ORM\Entity(repositoryClass: SkillRepository::class)]
+#[Table(name: 'skill')]
 class Skill
 {
     #[ORM\Id]

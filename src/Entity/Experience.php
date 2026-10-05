@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\Table;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Entity(repositoryClass: ExperienceRepository::class)]
-#[Table(name: 'Experience')]
+#[Table(name: 'experience')]
 class Experience
 {
 
