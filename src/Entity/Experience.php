@@ -23,7 +23,7 @@ class Experience
     #[Assert\Type('string'), Assert\NotBlank]
     private string $experiencename;
 
-    #[Column(type:'string', nullable: true)]
+    #[Column(type:'text', nullable: true)]
     private ?string $experiencedescription=null;
     #[Column(type: 'string', nullable: true)]
     private ?string $experiencedate=null;
