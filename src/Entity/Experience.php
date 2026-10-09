@@ -19,7 +19,7 @@ class Experience
     #[Id]
     #[Column(type: 'integer'), GeneratedValue]
     private ?int $id=null;
-    #[Column(type: 'string', nullable: false)]
+    #[Column(type: 'text', nullable: false)]
     #[Assert\Type('string'), Assert\NotBlank]
     private string $experiencename;
 
