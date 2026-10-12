@@ -9,15 +9,22 @@
 parameters:
 
 services:
-    # default configuration for services in *this* file
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+
+    # 1. Configuration par défaut
+    _defaults:
+        autowire: true      # Injecte automatiquement les dépendances
+        autoconfigure: true # Enregistre automatiquement les services
+
+    # 2. Chargement de toutes les classes dans src/
     App\:
         resource: '../src/'
+
+    # 3. Injection spécifique des variables pour TelegramService
+    App\Service\TelegramService:
+        arguments:
+            $botToken: '%env(TELEGRAM_BOT_TOKEN)%'
+            $chatId: '%env(TELEGRAM_CHAT_ID)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
