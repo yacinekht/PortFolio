@@ -68,7 +68,7 @@ class HomeController extends AbstractController
         $this->addFlash('success', 'Votre message a bien été transmis à Yacine !');
 
         // Redirige vers la page d'accueil (vérifie que ta route d'accueil s'appelle bien 'home' ou ajuste selon ton code)
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('HomeController');
     }
 
 }
