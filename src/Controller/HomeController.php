@@ -64,25 +64,7 @@ class HomeController extends AbstractController
             htmlspecialchars($messageContent)
         );
 
-        // Appel direct pour voir l'erreur exacte si ça bloque
-        $url = sprintf('https://api.telegram.org/bot8696031208:AAE9SJeQ7Usod4nJgWY_9AltYRCjrh3bpc/sendMessage');
-
-        $client = \Symfony\Component\HttpClient\HttpClient::create();
-        $response = $client->request('POST', $url, [
-            'json' => [
-                'chat_id' => '2107507530',
-                'text' => $text,
-                'parse_mode' => 'HTML',
-            ],
-        ]);
-
-        $statusCode = $response->getStatusCode();
-        $content = $response->getContent(false);
-
-        if ($statusCode !== 200) {
-            // Affiche l'erreur renvoyée par Telegram à l'écran
-            dd($statusCode, $content);
-        }
+        $telegramService->sendMessage($text);
 
         $this->addFlash('success', 'Votre message a bien été transmis à Yacine !');
         return $this->redirectToRoute('HomeController');

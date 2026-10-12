@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -17,12 +16,13 @@ class TelegramService
         string $chatId
     ) {
         $this->client = $client;
-        $this->botToken = $botToken;
-        $this->chatId = $chatId;
+        $this->botToken = trim($botToken); // trim() enlève tout espace parasite au cas où !
+        $this->chatId = trim($chatId);
     }
 
     public function sendMessage(string $message): bool
     {
+        // L'URL se construit ici automatiquement :
         $url = sprintf('https://api.telegram.org/bot%s/sendMessage', $this->botToken);
 
         try {
@@ -39,5 +39,4 @@ class TelegramService
             return false;
         }
     }
-
 }
