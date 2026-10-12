@@ -1,30 +1,19 @@
 # yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-# See also https://symfony.com/doc/current/service_container/import.html
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
 services:
-
-
     # 1. Configuration par défaut
     _defaults:
         autowire: true      # Injecte automatiquement les dépendances
         autoconfigure: true # Enregistre automatiquement les services
 
-    # 2. Chargement de toutes les classes dans src/
+    # 2. Chargement automatique de toutes les classes dans src/
     App\:
         resource: '../src/'
 
-    # 3. Injection spécifique des variables pour TelegramService
+    # 3. Injection explicite des variables (DOIT ETRE EN DERNIER pour surcharger le chargement auto)
     App\Service\TelegramService:
         arguments:
             $botToken: '%env(TELEGRAM_BOT_TOKEN)%'
             $chatId: '%env(TELEGRAM_CHAT_ID)%'
-
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
