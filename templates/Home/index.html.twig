@@ -234,24 +234,69 @@
             <div class="wrap">
                 <h2>Contact</h2>
                 <p>Je recherche un stage pour mai 2027, suivi d'une alternance à la rentrée 2027, dans les domaines du Cloud ou de la Cybersécurité. N'hésitez pas à me contacter, je vous répondrai dans les plus brefs délais.</p>
-                <a class="btn btn-main" href="mailto:yacine.khiat8@gmail.com">↗ Envoyer un e-mail</a>
+                <a class="btn btn-main" href="mailto:yacine.khiat8@gmail.com">↗ Envoyer un e-mail</a><br>
 {#                message telegram#}
 
 
 
-                    <h3 class="h5 fw-bold mb-3"><i class="fa-brands fa-telegram text-info me-2"></i>Envoyez-moi un message instantané</h3>
+                <!-- Section Contact Telegram -->
+                <div class="container my-5" style="max-width: 550px;">
+                    <div class="p-4 rounded-4 shadow-lg" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px);">
 
-                    <form action="{{ path('app_send_telegram_message') }}" method="post">
-                        <div class="mb-3">
-                            <input type="text" name="visitor_name" class="form-control" placeholder="Votre nom / entreprise" required>
+                        <div class="text-center mb-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-circle mb-3" style="width: 50px; height: 50px;">
+                                <i class="fa-brands fa-telegram fs-4"></i>
+                            </div>
+                            <h3 class="h5 fw-bold text-white mb-1">Envoyez-moi un message instantané</h3>
+                            <p class="text-muted small">Reçu directement sur mon téléphone via Telegram</p>
                         </div>
-                        <div class="mb-3">
-                            <textarea name="visitor_message" class="form-control" rows="3" placeholder="Votre message..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn-eh w-100" style="background: #229ED9;">
-                            <i class="fa-solid fa-paper-plane me-2"></i> Envoyer sur le Telegram de Yacine
-                        </button>
-                    </form>
+
+                        <form action="{{ path('app_send_telegram_message') }}" method="post">
+                            <div class="mb-3">
+                                <input type="text" name="visitor_name" class="form-control form-control-dark" placeholder="Votre nom / entreprise" required>
+                            </div>
+                            <div class="mb-3">
+                                <textarea name="visitor_message" class="form-control form-control-dark" rows="3" placeholder="Votre message..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-cyan w-100 fw-semibold d-flex align-items-center justify-content-center gap-2 py-2 fs-6">
+                                <i class="fa-solid fa-paper-plane"></i> Envoyer sur le Telegram de Yacine
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- CSS personnalisé à ajouter à ton style ou dans un bloc <style> -->
+                <style>
+                    .form-control-dark {
+                        background-color: rgba(255, 255, 255, 0.05) !important;
+                        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+                        color: #fff !important;
+                        border-radius: 10px;
+                        font-family: monospace;
+                        padding: 10px 14px;
+                    }
+                    .form-control-dark::placeholder {
+                        color: #8a99a8 !important;
+                    }
+                    .form-control-dark:focus {
+                        background-color: rgba(255, 255, 255, 0.08) !important;
+                        border-color: #00e5ff !important;
+                        box-shadow: 0 0 10px rgba(0, 229, 255, 0.25) !important;
+                    }
+                    .btn-cyan {
+                        background-color: #00e5ff !important;
+                        color: #000 !important;
+                        border: none;
+                        border-radius: 10px;
+                        transition: all 0.3s ease;
+                    }
+                    .btn-cyan:hover {
+                        background-color: #00b3cc !important;
+                        box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+                        transform: translateY(-1px);
+                    }
+                </style>
 
 
 

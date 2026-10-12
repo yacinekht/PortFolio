@@ -58,9 +58,9 @@ class HomeController extends AbstractController
         $messageContent = $request->request->get('visitor_message');
 
         $text = sprintf(
-            "🚀 *Nouveau message du Portfolio !*\n\n*De :* %s\n*Message :*\n%s",
-            $name,
-            $messageContent
+            "🚀 <b>Nouveau message du Portfolio !</b>\n\n<b>De :</b> %s\n<b>Message :</b>\n%s",
+            htmlspecialchars($name),
+            htmlspecialchars($messageContent)
         );
 
         $telegramService->sendMessage($text);

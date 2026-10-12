@@ -30,7 +30,7 @@ class TelegramService
                 'json' => [
                     'chat_id' => $this->chatId,
                     'text' => $message,
-                    'parse_mode' => 'Markdown',
+                    'parse_mode' => 'HTML',
                 ],
             ]);
 
