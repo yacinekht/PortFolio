@@ -34,10 +34,6 @@ class CvDocumentCrudController extends AbstractCrudController
             ->onlyOnForms();
 
         yield TextField::new('filename', 'Nom du fichier')->onlyOnIndex();
-
-        yield TextField::new('updatedAt', 'Mis à jour le')
-            ->formatValue(fn ($value) => $value instanceof \DateTimeInterface ? $value->format('d/m/Y H:i') : '')
-            ->onlyOnIndex();
     }
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
