@@ -5,7 +5,6 @@ namespace App\Controller\admin;
 use App\Entity\CvDocument;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -35,7 +34,10 @@ class CvDocumentCrudController extends AbstractCrudController
             ->onlyOnForms();
 
         yield TextField::new('filename', 'Nom du fichier')->onlyOnIndex();
-        yield DateTimeField::new('updatedAt', 'Mis à jour le')->onlyOnIndex();
+
+        yield TextField::new('updatedAt', 'Mis à jour le')
+            ->formatValue(fn ($value) => $value instanceof \DateTimeInterface ? $value->format('d/m/Y H:i') : '')
+            ->onlyOnIndex();
     }
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
@@ -58,7 +60,9 @@ class CvDocumentCrudController extends AbstractCrudController
             return;
         }
 
-        $cv->setContent(file_get_contents($file->getPathname()));
+        $stream = fopen($file->getPathname(), 'rb');
+
+        $cv->setContent($stream);
         $cv->setFilename($file->getClientOriginalName());
         $cv->setUpdatedAt(new \DateTime());
     }
