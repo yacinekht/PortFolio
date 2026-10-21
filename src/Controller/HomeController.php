@@ -6,7 +6,6 @@ use App\Repository\ExperienceRepository;
 use App\Repository\PassionRepository;
 use App\Repository\SkillRepository;
 use App\Repository\TrainingRepository;
-use App\Service\TelegramService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,12 +25,11 @@ class HomeController extends AbstractController
 
         $training = $trainingRepository->findAll();
         $passion = $passionRepository->findAll();
-        $experience = $experienceRepository->findAll();
+        $experience = $experienceRepository->findBy([], ['id' => 'DESC']);
 
         foreach ($skills as $skill) {
             $nom = $skill->getName();
             $category = $skill->getCategory();
-            $position = $skill->getPosition();
 
             $skillsGroupes[$category][] = $nom;
         }
@@ -47,8 +45,8 @@ class HomeController extends AbstractController
     #[Route('/send-telegram', name: 'app_send_telegram_message', methods: ['POST'])]
     public function sendTelegram(Request $request): Response
     {
-        $name = $request->request->get('visitor_name');
-        $messageContent = $request->request->get('visitor_message');
+        $name = (string) $request->request->get('visitor_name');
+        $messageContent = (string) $request->request->get('visitor_message');
 
         $text = sprintf(
             "🚀 <b>Nouveau message du Portfolio !</b>\n\n<b>De :</b> %s\n<b>Message :</b>\n%s",
@@ -56,8 +54,8 @@ class HomeController extends AbstractController
             htmlspecialchars($messageContent)
         );
 
-        $token = '8696031208:AAE9SJe9Q7Usod4nJgWY_9AltYRCjrh3bpc';
-        $url = sprintf('https://api.telegram.org/bot%s/sendMessage', trim($token));
+        $token = $_ENV['TELEGRAM_BOT_TOKEN'] ?? $_SERVER['TELEGRAM_BOT_TOKEN'] ?? getenv('TELEGRAM_BOT_TOKEN');
+        $url = sprintf('https://api.telegram.org/bot%s/sendMessage', trim((string) $token));
 
         $client = \Symfony\Component\HttpClient\HttpClient::create();
         $response = $client->request('POST', $url, [
@@ -68,11 +66,9 @@ class HomeController extends AbstractController
             ],
         ]);
 
-        $statusCode = $response->getStatusCode();
-        $content = $response->getContent(false);
-
-        if ($statusCode !== 200) {
-            dd($statusCode, $content);
+        if ($response->getStatusCode() !== 200) {
+            $this->addFlash('error', "Le message n'a pas pu être envoyé, réessayez plus tard.");
+            return $this->redirectToRoute('HomeController');
         }
 
         $this->addFlash('success', 'Votre message a bien été transmis à Yacine !');
