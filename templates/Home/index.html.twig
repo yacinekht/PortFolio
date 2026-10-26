@@ -18,6 +18,7 @@
             --orange: #ff6b1a;
             --violet: #8b5cf6;
             --green: #34d399;
+            --red: #f87171;
             --mono: 'JetBrains Mono', ui-monospace, monospace;
             --display: 'Syne', 'Arial Black', sans-serif;
             --sans: 'DM Sans', system-ui, sans-serif;
@@ -99,6 +100,92 @@
         .links a:hover { color: var(--cyan); border-color: var(--cyan); }
         footer { padding: 28px 0; border-top: 1px solid var(--line); text-align: center; font-family: var(--mono); font-size: .72rem; color: var(--muted); }
 
+        /* ---------- Formulaire Telegram ---------- */
+        .tg-card {
+            width: 100%;
+            max-width: 520px;
+            margin: 40px auto 0;
+            padding: 32px 28px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
+        }
+        .tg-title {
+            font-family: var(--sans);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .contact .tg-sub {
+            color: var(--muted);
+            font-size: .9rem;
+            margin: 0 auto 24px;
+        }
+        .tg-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .tg-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #fff;
+            font-family: var(--mono);
+            font-size: .85rem;
+            text-align: left;
+            resize: vertical;
+        }
+        .tg-input::placeholder { color: #8a99a8; }
+        .tg-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--cyan);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.25);
+        }
+        .tg-btn {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--cyan);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--mono);
+            font-size: .85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .3s ease;
+        }
+        .tg-btn:hover {
+            background: #00b3cc;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+            transform: translateY(-1px);
+        }
+        /* Champ piège anti-robots : invisible pour un humain */
+        .tg-hp {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        /* Messages de confirmation / erreur */
+        .tg-flash {
+            margin: 0 0 18px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-family: var(--mono);
+            font-size: .82rem;
+            text-align: left;
+        }
+        .contact .tg-flash { max-width: none; }
+        .tg-flash-success { background: rgba(52, 211, 153, .1); border: 1px solid rgba(52, 211, 153, .4); color: var(--green); }
+        .tg-flash-error { background: rgba(248, 113, 113, .1); border: 1px solid rgba(248, 113, 113, .4); color: var(--red); }
+
         @media (max-width: 900px) {
             .hero { padding: 70px 0; }
             .hero .wrap { grid-template-columns: 1fr; }
@@ -107,7 +194,7 @@
             .nav ul { gap: 16px; } .nav ul a { font-size: .62rem; letter-spacing: .06em; }
             .nav .logo { display: none; }
         }
-        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .badge i { animation: none; } .btn { transition: none; } }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .badge i { animation: none; } .btn, .tg-btn { transition: none; } }
     </style>
 {% endblock %}
 
@@ -234,128 +321,41 @@
             <div class="wrap">
                 <h2>Contact</h2>
                 <p>Je recherche un stage pour mai 2027, suivi d'une alternance à la rentrée 2027, dans les domaines du Cloud ou de la Cybersécurité. N'hésitez pas à me contacter, je vous répondrai dans les plus brefs délais.</p>
-                <a class="btn btn-main" href="mailto:yacine.khiat8@gmail.com">↗ Envoyer un e-mail</a> <br><br>
-{#                message telegram#}
+                <a class="btn btn-main" href="mailto:yacine.khiat8@gmail.com">↗ Envoyer un e-mail</a>
 
-
-
-                <!-- Section Contact Telegram -->
+                {# ---------- Message Telegram ---------- #}
                 <div class="tg-card">
                     <h3 class="tg-title">Envoyez-moi un message instantané</h3>
                     <p class="tg-sub">Reçu directement sur mon téléphone via Telegram</p>
 
+                    {# Messages de confirmation / erreur (supprime ce bloc si ton base.html.twig les affiche déjà) #}
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="tg-flash tg-flash-{{ label == 'success' ? 'success' : 'error' }}" role="status">{{ message }}</div>
+                        {% endfor %}
+                    {% endfor %}
+
                     <form action="{{ path('app_send_telegram_message') }}" method="post" class="tg-form">
-                        <input type="text" name="visitor_name" class="tg-input" placeholder="Votre nom / entreprise" required>
-                        <textarea name="visitor_message" class="tg-input" rows="4" placeholder="Votre message..." required></textarea>
+                        {# Protection CSRF #}
+                        <input type="hidden" name="_token" value="{{ csrf_token('telegram_message') }}">
+
+                        {# Piège anti-robots : ne pas remplir, invisible pour un humain #}
+                        <div class="tg-hp" aria-hidden="true">
+                            <label for="website">Ne pas remplir ce champ</label>
+                            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <input type="text" name="visitor_name" class="tg-input" placeholder="Votre nom / entreprise" required maxlength="80">
+                        <textarea name="visitor_message" class="tg-input" rows="4" placeholder="Votre message..." required maxlength="1000"></textarea>
                         <button type="submit" class="tg-btn">Envoyer sur le Telegram de Yacine</button>
                     </form>
                 </div>
 
-                <style>
-                    .tg-card {
-                        width: 100%;
-                        max-width: 520px;
-                        margin: 40px auto 0;
-                        padding: 32px 28px;
-                        background: rgba(255, 255, 255, 0.03);
-                        border: 1px solid rgba(255, 255, 255, 0.08);
-                        border-radius: 18px;
-                        backdrop-filter: blur(10px);
-                    }
-                    .tg-title {
-                        font-family: var(--sans);
-                        font-size: 1.15rem;
-                        font-weight: 700;
-                        color: #fff;
-                        margin-bottom: 6px;
-                    }
-                    .contact .tg-sub {
-                        color: var(--muted);
-                        font-size: .9rem;
-                        margin: 0 auto 24px;
-                    }
-                    .tg-form {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 14px;
-                    }
-                    .tg-input {
-                        width: 100%;
-                        padding: 12px 16px;
-                        background: rgba(255, 255, 255, 0.05);
-                        border: 1px solid rgba(255, 255, 255, 0.15);
-                        border-radius: 10px;
-                        color: #fff;
-                        font-family: var(--mono);
-                        font-size: .85rem;
-                        text-align: left;
-                        resize: vertical;
-                    }
-                    .tg-input::placeholder { color: #8a99a8; }
-                    .tg-input:focus {
-                        outline: none;
-                        background: rgba(255, 255, 255, 0.08);
-                        border-color: var(--cyan);
-                        box-shadow: 0 0 10px rgba(0, 229, 255, 0.25);
-                    }
-                    .tg-btn {
-                        width: 100%;
-                        padding: 14px 16px;
-                        background: var(--cyan);
-                        color: #000;
-                        border: none;
-                        border-radius: 10px;
-                        font-family: var(--mono);
-                        font-size: .85rem;
-                        font-weight: 700;
-                        cursor: pointer;
-                        transition: all .3s ease;
-                    }
-                    .tg-btn:hover {
-                        background: #00b3cc;
-                        box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
-                        transform: translateY(-1px);
-                    }
-                </style>
-
-                <!-- CSS personnalisé à ajouter à ton style ou dans un bloc <style> -->
-                <style>
-                    .form-control-dark {
-                        background-color: rgba(255, 255, 255, 0.05) !important;
-                        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-                        color: #fff !important;
-                        border-radius: 10px;
-                        font-family: monospace;
-                        padding: 10px 14px;
-                    }
-                    .form-control-dark::placeholder {
-                        color: #8a99a8 !important;
-                    }
-                    .form-control-dark:focus {
-                        background-color: rgba(255, 255, 255, 0.08) !important;
-                        border-color: #00e5ff !important;
-                        box-shadow: 0 0 10px rgba(0, 229, 255, 0.25) !important;
-                    }
-                    .btn-cyan {
-                        background-color: #00e5ff !important;
-                        color: #000 !important;
-                        border: none;
-                        border-radius: 10px;
-                        transition: all 0.3s ease;
-                    }
-                    .btn-cyan:hover {
-                        background-color: #00b3cc !important;
-                        box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
-                        transform: translateY(-1px);
-                    }
-                </style>
-
-
-
                 <div class="links">
                     <a href="https://github.com/votre-compte" rel="noopener" target="_blank">GitHub</a>
                     <a href="https://www.linkedin.com/in/yacine-khiat-994b69386/" rel="noopener" target="_blank">LinkedIn</a>
-                    <a href="{{ path('app_cv_download') }}" download="CV-Yacine-Khiat.pdf">Télécharger mon CV</a>               </div>
+                    <a href="{{ path('app_cv_download') }}" download="CV-Yacine-Khiat.pdf">Télécharger mon CV</a>
+                </div>
             </div>
         </section>
     </main>
