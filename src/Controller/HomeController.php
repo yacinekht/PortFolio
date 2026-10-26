@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 use App\Repository\ExperienceRepository;
@@ -45,7 +46,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/send-telegram', name: 'app_send_telegram_message', methods: ['POST'])]
-    public function sendTelegram(Request $request,RateLimiterFactory $telegramContactLimiter): Response
+    public function sendTelegram(Request $request,#[Autowire(service: 'limiter.telegram_contact')] RateLimiterFactory $telegramContactLimiter): Response
     {
         // 1. Robot détecté (champ caché rempli) : on ignore sans rien dire
         if ($request->request->get('website')) {
@@ -66,6 +67,10 @@ class HomeController extends AbstractController
 
         $limiter = $telegramContactLimiter->create($ip);
         $limit = $limiter->consume();
+        dd(
+            $limit->isAccepted(),
+            $limit->getRemainingTokens()
+        );
 
         if (!$limit->isAccepted()) {
             $this->addFlash(
