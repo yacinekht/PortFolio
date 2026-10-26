@@ -67,11 +67,6 @@ class HomeController extends AbstractController
 
         $limiter = $telegramContactLimiter->create($ip);
         $limit = $limiter->consume();
-        dd(
-            $limit->isAccepted(),
-            $limit->getRemainingTokens()
-        );
-
         if (!$limit->isAccepted()) {
             $this->addFlash(
                 'error',
