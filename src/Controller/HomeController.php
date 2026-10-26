@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 use App\Repository\ExperienceRepository;
 use App\Repository\PassionRepository;
@@ -44,7 +45,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/send-telegram', name: 'app_send_telegram_message', methods: ['POST'])]
-    public function sendTelegram(Request $request): Response
+    public function sendTelegram(Request $request,RateLimiterFactory $telegramContactLimiter): Response
     {
         // 1. Robot détecté (champ caché rempli) : on ignore sans rien dire
         if ($request->request->get('website')) {
@@ -60,6 +61,20 @@ class HomeController extends AbstractController
         $name = trim((string) $request->request->get('visitor_name'));
         $messageContent = trim((string) $request->request->get('visitor_message'));
 
+        //// Limite : 3 messages par heure et par IP
+        $ip = $request->getClientIp() ?? 'unknown';
+
+        $limiter = $telegramContactLimiter->create($ip);
+        $limit = $limiter->consume();
+
+        if (!$limit->isAccepted()) {
+            $this->addFlash(
+                'error',
+                'Vous avez atteint la limite de 3 messages par heure. Réessayez plus tard.'
+            );
+
+            return $this->redirectToRoute('HomeController');
+        }
         // 3. Validation
         if ($name === '' || $messageContent === '' || mb_strlen($name) > 80 || mb_strlen($messageContent) > 1000) {
             $this->addFlash('error', 'Message invalide.');
